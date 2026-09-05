@@ -87,7 +87,7 @@ export async function login(req, res) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    const token = jwt.sign({ id: user._id.toString() }, process.env.JWT_SECRET_KEY, {
+    const token = jwt.sign({ userId: user._id.toString() }, process.env.JWT_SECRET_KEY, {
       expiresIn: "1h",
     });
 
@@ -133,7 +133,7 @@ export async function onboard(req, res) {
     await upsertStreamUser({
       id: updatedUser._id.toString(),
       name: updatedUser.fullname,
-      image: updatedUser.randomAvatar || "",
+      image: updatedUser.profilePic || "",
     });
     console.log(`Stream user updated after onboarding for ${updatedUser.fullname}`);
   } catch (error) {
