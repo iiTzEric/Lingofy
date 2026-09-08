@@ -9,6 +9,11 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query'
 
+import axios from 'axios';
+
+// Ensure all axios requests include cookies/credentials
+axios.defaults.withCredentials = true;
+
 const queryClient = new QueryClient()
 
 createRoot(document.getElementById('root')).render(
