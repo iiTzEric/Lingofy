@@ -16,8 +16,7 @@ const App = () => {
   // tanstack query
   const { 
     data:authData, 
-    isLoading, 
-    error 
+    isLoading 
   } = useQuery({
     queryKey: ["authUser"],
     queryFn: async () => {
@@ -29,6 +28,13 @@ const App = () => {
 
   const authUser = authData?.user;
 
+  if (isLoading) {
+    return (
+      <div className="h-screen flex items-center justify-center" data-theme="coffee">
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen"  data-theme="coffee">

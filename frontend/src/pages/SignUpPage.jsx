@@ -28,7 +28,7 @@ const SignUpPage = () => {
 
 
   return (
-    <div className="h-screen flex items-centre justify-center p-4 sm:p-6 md:p-8" data-theme="forest">
+    <div className="h-screen flex items-center justify-center p-4 sm:p-6 md:p-8" data-theme="forest">
       <div className="border border-primary/25 flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-base-100 rounded-xl shadow-lg overflow-hidden">
 
     {/* SignUp Form - LEFT SIDE */}
@@ -149,10 +149,10 @@ const SignUpPage = () => {
         <div className="max-w-md p-8">
           {/* ILLUSTRATION */}
           <div className="relative aspect-square max-w-sm mx-auto">
-            <img src="Halloween video call-cuate.png" alt="language connection illustration" className="w-ful h-full" />
+            <img src="Halloween video call-cuate.png" alt="language connection illustration" className="w-full h-full" />
           </div>
 
-          <div className="text-center space-y3 mt-6">
+          <div className="text-center space-y-3 mt-6">
             <h2 className="text-xl font-semibold">Connect with language partners worldwide</h2>
             <p className="opacity-70">Practice conversations, make friends, and improve your language skills together</p>
           </div>
