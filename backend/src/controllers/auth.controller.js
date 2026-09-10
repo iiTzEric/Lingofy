@@ -2,6 +2,13 @@ import { upsertStreamUser } from "../lib/stream.js";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 
+const cookieOptions = {
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+  httpOnly: true,
+  sameSite: "strict",
+  secure: process.env.NODE_ENV === "production",
+};
+
 export async function signup(req, res) {
   const { email, password, fullname } = req.body;
 
@@ -14,13 +21,14 @@ export async function signup(req, res) {
       return res.status(400).json({ message: "Password must be at least 6 characters" });
     }
 
+    const normalizedEmail = email.trim().toLowerCase();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(normalizedEmail)) {
       return res.status(400).json({ message: "Invalid email format" });
     }
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
       return res.status(400).json({ message: "Email already exists, please use a diffrent one" });
     }
@@ -29,7 +37,7 @@ export async function signup(req, res) {
     const randomAvatar = `https://api.dicebear.com/9.x/avataaars/svg?seed=${idx}`;
 
     const newUser = await User.create({
-      email,
+      email: normalizedEmail,
       fullname,
       password,
       profilePic: randomAvatar,
@@ -77,7 +85,9 @@ export async function login(req, res) {
       return res.status(500).json({ message: "Server authentication is not configured" });
     }
 
-    const user = await User.findOne({ email: normalizedEmail });
+    const user = await User.findOne({
+      email: { $regex: `^${normalizedEmail.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, $options: "i" },
+    });
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
