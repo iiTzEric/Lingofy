@@ -69,6 +69,8 @@ export async function sendFriendRequest(req, res) {
             sender: myId,
             recipient: recipientId,
         });
+
+        await newFriendRequest.save();
         
         res.status(201).json({ message: "Friend request sent successfully." });
 
