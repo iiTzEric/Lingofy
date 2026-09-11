@@ -29,7 +29,7 @@ const Sidebar = () => {
                     <span>Home</span>
                 </Link>
 
-                <Link to="/" className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${
+                <Link to="/friends" className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${
                     currentPath === "/friends" ? "btn-active" : ""
                     }`}
                 >
@@ -37,7 +37,7 @@ const Sidebar = () => {
                     <span>Friends</span>
                 </Link>
 
-                <Link to="/" className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${
+                <Link to="/notifications" className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${
                     currentPath === "/notifications" ? "btn-active" : ""
                     }`}
                 >

@@ -30,10 +30,8 @@ const Navbar = () => {
           )}
 
           <div className="flex items-center gap-3 sm:gap-4 ml-auto">
-            <Link to={"/notifications"}>
-              <button className="btn btn-ghost btn-circle">
-                <BellIcon className="h-6 w-6 text-base-content opacity-70" />
-              </button>
+            <Link to="/notifications" className="btn btn-ghost btn-circle" aria-label="Notifications">
+              <BellIcon className="h-6 w-6 text-base-content opacity-70" />
             </Link>
           </div>
 
@@ -46,7 +44,7 @@ const Navbar = () => {
           </div>
 
           {/* Logout button */}
-          <button className="btn btn-ghost btn-circle" onClick={logoutMutation}>
+          <button className="btn btn-ghost btn-circle" onClick={logoutMutation} aria-label="Log out">
             <LogOutIcon className="h-6 w-6 text-base-content opacity-70" />
           </button>
         </div>
