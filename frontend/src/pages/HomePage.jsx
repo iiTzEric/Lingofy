@@ -1,39 +1,52 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getOutgoingFriendReqs, getRecommendedUsers, getUserFriends, sendFriendRequest } from "../lib/api";
+import { useEffect, useState } from "react";
+import {
+  getOutgoingFriendReqs,
+  getRecommendedUsers,
+  getUserFriends,
+  sendFriendRequest,
+} from "../lib/api";
 import { Link } from "react-router";
 import { CheckCircleIcon, MapPinIcon, UserPlusIcon, UsersIcon } from "lucide-react";
-import FriendCard from "../components/FriendCard";
-import NofriendsFound from "../components/NoFriendsFound";
-import { capitialize } from "../lib/utils";
-import { getLanguageFlag } from "../lib/languageFlag";
 
+import { capitialize } from "../lib/utils";
+
+import FriendCard, { getLanguageFlag } from "../components/FriendCard";
+import NoFriendsFound from "../components/NoFriendsFound";
 
 const HomePage = () => {
   const queryClient = useQueryClient();
+  const [outgoingRequestsIds, setOutgoingRequestsIds] = useState(new Set());
 
-  const { data: friends=[], isLoading: loadingFriends } = useQuery({
+  const { data: friends = [], isLoading: loadingFriends } = useQuery({
     queryKey: ["friends"],
     queryFn: getUserFriends,
-  })
+  });
 
-  const { data: recommendUsers=[], isLoading: loadingUsers } = useQuery({
+  const { data: recommendedUsers = [], isLoading: loadingUsers } = useQuery({
     queryKey: ["users"],
     queryFn: getRecommendedUsers,
-  })
+  });
 
   const { data: outgoingFriendReqs } = useQuery({
     queryKey: ["outgoingFriendReqs"],
     queryFn: getOutgoingFriendReqs,
-  })
+  });
 
-  const outgoingRequestsIds = new Set(
-    (outgoingFriendReqs ?? []).map((request) => request.recipient._id)
-  );
-
-  const {mutate: sendRequestMutation, isPending } = useMutation({
+  const { mutate: sendRequestMutation, isPending } = useMutation({
     mutationFn: sendFriendRequest,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["outgoingFriendReqs"] }),
-  })
+  });
+
+  useEffect(() => {
+    const outgoingIds = new Set();
+    if (outgoingFriendReqs && outgoingFriendReqs.length > 0) {
+      outgoingFriendReqs.forEach((req) => {
+        outgoingIds.add(req.recipient._id);
+      });
+      setOutgoingRequestsIds(outgoingIds);
+    }
+  }, [outgoingFriendReqs]);
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
@@ -48,15 +61,15 @@ const HomePage = () => {
 
         {loadingFriends ? (
           <div className="flex justify-center py-12">
-              <span className="loading loading-spinner loading-lg" />
+            <span className="loading loading-spinner loading-lg" />
           </div>
         ) : friends.length === 0 ? (
-          <NofriendsFound />
+          <NoFriendsFound />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {friends.map((friend) => (
-                <FriendCard key={friend._id} friend={friend} />
-              ))}
+            {friends.map((friend) => (
+              <FriendCard key={friend._id} friend={friend} />
+            ))}
           </div>
         )}
 
@@ -76,7 +89,7 @@ const HomePage = () => {
             <div className="flex justify-center py-12">
               <span className="loading loading-spinner loading-lg" />
             </div>
-          ) : recommendUsers.length === 0 ? (
+          ) : recommendedUsers.length === 0 ? (
             <div className="card bg-base-200 p-6 text-center">
               <h3 className="font-semibold text-lg mb-2">No recommendations available</h3>
               <p className="text-base-content opacity-70">
@@ -85,11 +98,8 @@ const HomePage = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {recommendUsers.map((user) => {
+              {recommendedUsers.map((user) => {
                 const hasRequestBeenSent = outgoingRequestsIds.has(user._id);
-                const learningLanguage = Array.isArray(user.learningLanguage)
-                  ? user.learningLanguage[0]
-                  : user.learningLanguage;
 
                 return (
                   <div
@@ -99,7 +109,7 @@ const HomePage = () => {
                     <div className="card-body p-5 space-y-4">
                       <div className="flex items-center gap-3">
                         <div className="avatar size-16 rounded-full">
-                          <img src={user.profilePicture} alt={user.fullname} />
+                          <img src={user.profilePic} alt={user.fullname} />
                         </div>
 
                         <div>
@@ -120,8 +130,8 @@ const HomePage = () => {
                           Native: {capitialize(user.nativeLanguage)}
                         </span>
                         <span className="badge badge-outline">
-                          {getLanguageFlag(learningLanguage)}
-                          Learning: {capitialize(learningLanguage)}
+                          {getLanguageFlag(user.learningLanguage)}
+                          Learning: {capitialize(user.learningLanguage)}
                         </span>
                       </div>
 
@@ -154,10 +164,9 @@ const HomePage = () => {
             </div>
           )}
         </section>
-
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default HomePage;
