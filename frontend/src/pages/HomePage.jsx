@@ -1,15 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 import { getOutgoingFriendReqs, getRecommendedUsers, getUserFriends, sendFriendRequest } from "../lib/api";
 import { Link } from "react-router";
 import { CheckCircleIcon, MapPinIcon, UserPlusIcon, UsersIcon } from "lucide-react";
-import FriendCard, { getLanguageFlag } from "../components/FriendCard";
+import FriendCard from "../components/FriendCard";
 import NofriendsFound from "../components/NoFriendsFound";
 import { capitialize } from "../lib/utils";
+import { getLanguageFlag } from "../lib/languageFlag";
+
 
 const HomePage = () => {
   const queryClient = useQueryClient();
-  const [outgoingRequestsIds, setOutgoingRequestsIds] = useState([new Set]);
 
   const { data: friends=[], isLoading: loadingFriends } = useQuery({
     queryKey: ["friends"],
@@ -26,20 +26,14 @@ const HomePage = () => {
     queryFn: getOutgoingFriendReqs,
   })
 
+  const outgoingRequestsIds = new Set(
+    (outgoingFriendReqs ?? []).map((request) => request.recipient._id)
+  );
+
   const {mutate: sendRequestMutation, isPending } = useMutation({
     mutationFn: sendFriendRequest,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["outgoingFriendReqs"] }),
   })
-
-  useEffect(() => {
-    const outgoingIds = new Set()
-    if(outgoingFriendReqs && outgoingFriendReqs.length > 0) {
-      outgoingFriendReqs.forEach((req) => {
-        outgoingIds.add(req.recipient._id)
-      });
-      setOutgoingRequestsIds(outgoingIds);
-    }
-  }, [outgoingFriendReqs])
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
@@ -93,6 +87,9 @@ const HomePage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {recommendUsers.map((user) => {
                 const hasRequestBeenSent = outgoingRequestsIds.has(user._id);
+                const learningLanguage = Array.isArray(user.learningLanguage)
+                  ? user.learningLanguage[0]
+                  : user.learningLanguage;
 
                 return (
                   <div
@@ -102,11 +99,11 @@ const HomePage = () => {
                     <div className="card-body p-5 space-y-4">
                       <div className="flex items-center gap-3">
                         <div className="avatar size-16 rounded-full">
-                          <img src={user.profilePic} alt={user.fullName} />
+                          <img src={user.profilePicture} alt={user.fullname} />
                         </div>
 
                         <div>
-                          <h3 className="font-semibold text-lg">{user.fullName}</h3>
+                          <h3 className="font-semibold text-lg">{user.fullname}</h3>
                           {user.location && (
                             <div className="flex items-center text-xs opacity-70 mt-1">
                               <MapPinIcon className="size-3 mr-1" />
@@ -123,8 +120,8 @@ const HomePage = () => {
                           Native: {capitialize(user.nativeLanguage)}
                         </span>
                         <span className="badge badge-outline">
-                          {getLanguageFlag(user.learningLanguage)}
-                          Learning: {capitialize(user.learningLanguage)}
+                          {getLanguageFlag(learningLanguage)}
+                          Learning: {capitialize(learningLanguage)}
                         </span>
                       </div>
 
@@ -163,5 +160,4 @@ const HomePage = () => {
   )
 }
 
-export default HomePage
-
+export default HomePage;
