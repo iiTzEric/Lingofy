@@ -18,7 +18,7 @@ const OnboardingPage = () => {
     nativeLanguage: authUser?.nativeLanguage || "",
     learningLanguage: authUser?.learningLanguage || "",
     location: authUser?.location || "",
-    profilePic: authUser?.profilePic || "",
+    profilePicture: authUser?.profilePicture || authUser?.profilePic || "",
   });
 
 const { mutate:onboardingMutation, isPending } = useMutation({
@@ -43,7 +43,7 @@ const handleRandomAvatar = () => {
   const idx = Math.floor(Math.random() * 100) + 1; // generate a num between 1-100
   const randomAvatar = `https://api.dicebear.com/9.x/avataaars/svg?seed=${idx}`;
 
-  setFormState({ ...formState, profilePic: randomAvatar });
+  setFormState({ ...formState, profilePicture: randomAvatar });
   toast.success("Random Profile Pic Generated")
 };
 
@@ -60,9 +60,9 @@ const handleRandomAvatar = () => {
             <div className="flex flex-col items-center justify-center space-y-4">
                {/* IMAGE PREVIEW */}
                <div className="size-32 rounded-full bg-base-300 overflow-hidden">
-                {formState.profilePic ? (
+                {formState.profilePicture ? (
                   <img
-                    src={formState.profilePic}
+                    src={formState.profilePicture}
                     alt="Profile Preview"
                     className="w-full h-full object-cover"
                     />

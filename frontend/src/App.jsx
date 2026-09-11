@@ -7,11 +7,13 @@ import NotificationsPage from "./pages/NotificationsPage.jsx"
 import CallPage from "./pages/CallPage.jsx"
 import ChatPage from "./pages/ChatPage.jsx"
 import OnboardingPage from "./pages/OnboardingPage.jsx"
+import Layout from "./components/Layout.jsx";
 
 import { Toaster } from "react-hot-toast"
 
 import PageLoader from "./components/PageLoader.jsx";
 import useAuthUser from "./hooks/useAuthUser.js"
+
 
 const App = () => {
   // tanstack query
@@ -30,12 +32,18 @@ const App = () => {
   return (
     <div className="h-screen"  data-theme="coffee">
       <Routes>
-        <Route path="/" element={isAunthenticated && isOnboarded ? (
-          <HomePage />
-        ) : (
-          <Navigate to={!isAunthenticated ? "/login" : "/onboarding"} />
-        )
-        } />
+        <Route
+          path="/"
+          element={
+            isAunthenticated && isOnboarded ? (
+              <Layout showSidebar={true}>
+                <HomePage />
+              </Layout>
+            ) : (
+              <Navigate to={!isAunthenticated ? "/login" : "/onboarding"} />
+            )
+          }
+        />
         <Route
           path="/signup"
           element={

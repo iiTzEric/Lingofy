@@ -40,7 +40,7 @@ export async function signup(req, res) {
       email: normalizedEmail,
       fullname,
       password,
-      profilePic: randomAvatar,
+      profilePicture: randomAvatar,
     });
 
     try {
@@ -131,8 +131,12 @@ export async function onboard(req, res) {
       });
     }
 
+    const profilePicture = req.body.profilePicture?.trim() ||
+      `https://api.dicebear.com/9.x/avataaars/svg?seed=${userId}`;
+
     const updatedUser = await User.findByIdAndUpdate(userId, {
       ...req.body,
+      profilePicture,
       isOnboarded: true
     }, { new: true });
 
@@ -143,7 +147,7 @@ export async function onboard(req, res) {
     await upsertStreamUser({
       id: updatedUser._id.toString(),
       name: updatedUser.fullname,
-      image: updatedUser.profilePic || "",
+      image: updatedUser.profilePicture || "",
     });
     console.log(`Stream user updated after onboarding for ${updatedUser.fullname}`);
   } catch (error) {
