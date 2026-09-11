@@ -13,11 +13,13 @@ import { Toaster } from "react-hot-toast"
 
 import PageLoader from "./components/PageLoader.jsx";
 import useAuthUser from "./hooks/useAuthUser.js"
+import { useThemeStore } from "./store/useThemeStore.js";
 
 
 const App = () => {
   // tanstack query
  const {isLoading, authUser} = useAuthUser()
+ const { theme } = useThemeStore();
 
  const isAunthenticated = Boolean(authUser)
  const isOnboarded = authUser?.isOnboarded
@@ -30,7 +32,7 @@ const App = () => {
   }
 
   return (
-    <div className="h-screen"  data-theme="coffee">
+    <div className="h-screen"  data-theme={theme}>
       <Routes>
         <Route
           path="/"
