@@ -1,1 +1,9 @@
-export const capitialize = (str) => str.charAt(0).toUpperCase() + str.slice(1)
+export const capitialize = (value) => {
+	if (Array.isArray(value)) {
+		return value.map(capitialize).filter(Boolean).join(", ");
+	}
+
+	if (typeof value !== "string" || !value) return "";
+
+	return value.charAt(0).toUpperCase() + value.slice(1);
+};

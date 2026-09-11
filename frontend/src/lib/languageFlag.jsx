@@ -2,7 +2,10 @@ import { LANGUAGE_TO_FLAG } from "../constants";
 
 export function getLanguageFlag(language) {
   if (Array.isArray(language)) {
-    return language.map((item) => getLanguageFlag(item));
+    return language.map((item, index) => {
+      const flag = getLanguageFlag(item);
+      return flag ? <span key={`${item}-${index}`}>{flag}</span> : null;
+    });
   }
 
   if (typeof language !== "string") return null;
