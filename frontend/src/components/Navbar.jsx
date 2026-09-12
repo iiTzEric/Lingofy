@@ -13,39 +13,53 @@ const Navbar = () => {
   
 
   return (
-    <nav className="bg-base-200 border-b border-base sticky top-0 z-30 h-16 flex items-centeer">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-end w-full">
-          {/* LOGO - ONLY IN THE CHAT PAGE */}
+    <nav className="sticky top-0 z-30 flex h-[4.5rem] items-center border-b border-base-content/10 bg-base-100/90 shadow-sm backdrop-blur-md">
+      <div className="container mx-auto flex h-full items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className={`${isChatPage ? "" : "lg:hidden"} shrink-0`}>
+          <Link to="/" className="group flex items-center gap-2" aria-label="Lingofy home">
+            <span className="grid size-9 place-items-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/20">
+              <ShipWheelIcon className="size-5 text-primary" />
+            </span>
+            <span className="text-xl font-bold tracking-tight text-base-content sm:text-2xl">
+              Lingofy<span className="text-primary">.</span>
+            </span>
+          </Link>
+        </div>
 
-          {isChatPage && (
-            <div className="pl-5">
-              <Link to="/" className="flex items-center gap-2.5">
-                <ShipWheelIcon className="size-9 text-primary" />
-                <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary  tracking-wider">
-                  Lingofy
-                </span>
-              </Link>
-            </div>
-          )}
-
-          <div className="flex items-center gap-3 sm:gap-4 ml-auto">
-            <Link to="/notifications" className="btn btn-ghost btn-circle" aria-label="Notifications">
-              <BellIcon className="h-6 w-6 text-base-content opacity-70" />
-            </Link>
-          </div>
+        <div className="ml-auto flex items-center gap-1 sm:gap-2">
+          <Link
+            to="/notifications"
+            className="btn btn-ghost btn-circle btn-sm sm:btn-md"
+            aria-label="Notifications"
+            title="Notifications"
+          >
+            <BellIcon className="size-5 text-base-content/70" />
+          </Link>
 
           <ThemeSelector />
 
-          <div className="avatar">
-            <div className="w-9 rounded-full">
-              <img src={authUser?.profilePicture || authUser?.profilePic} alt="User Avatar" rel="noreferrer" />
+          <div className="ml-1 flex items-center gap-2 border-l border-base-content/10 pl-2 sm:ml-2 sm:pl-3">
+            <div className="avatar">
+              <div className="size-9 rounded-xl ring-2 ring-primary/15 ring-offset-1 ring-offset-base-100 sm:size-10">
+                <img
+                  src={authUser?.profilePicture || authUser?.profilePic}
+                  alt={`${authUser?.fullname || "User"} avatar`}
+                  rel="noreferrer"
+                />
+              </div>
             </div>
+            <span className="hidden max-w-28 truncate text-sm font-semibold md:block">
+              {authUser?.fullname}
+            </span>
           </div>
 
-          {/* Logout button */}
-          <button className="btn btn-ghost btn-circle" onClick={logoutMutation} aria-label="Log out">
-            <LogOutIcon className="h-6 w-6 text-base-content opacity-70" />
+          <button
+            className="btn btn-ghost btn-circle btn-sm sm:btn-md"
+            onClick={logoutMutation}
+            aria-label="Log out"
+            title="Log out"
+          >
+            <LogOutIcon className="size-5 text-base-content/70" />
           </button>
         </div>
       </div>
