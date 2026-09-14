@@ -60,7 +60,7 @@ const FriendsPage = () => {
               </p>
             </div>
 
-            <label className="input input-bordered flex w-full items-center gap-2 bg-[#fffdf8] sm:max-w-xs">
+            <label className="input input-bordered flex w-full items-center gap-2 bg-base-100 sm:max-w-xs">
               <SearchIcon className="size-4 text-base-content/50" />
               <input
                 type="search"
