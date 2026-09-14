@@ -24,13 +24,13 @@ const FriendsPage = () => {
   });
 
   return (
-    <div className="min-h-full bg-base-100 px-4 py-5 sm:px-6 sm:py-8 lg:px-10 lg:py-10">
+    <div className="min-h-full px-4 py-5 sm:px-6 sm:py-8 lg:px-10 lg:py-10">
       <div className="mx-auto max-w-7xl space-y-8">
-        <section className="relative isolate overflow-hidden rounded-[1.75rem] border border-primary/20 bg-gradient-to-br from-primary/15 via-base-200 to-secondary/10 px-5 py-7 shadow-sm sm:px-8 sm:py-9 lg:px-10">
-          <div className="pointer-events-none absolute -right-16 -top-20 -z-10 size-56 rounded-full bg-primary/10 blur-3xl" />
+        <section className="studio-hero relative isolate overflow-hidden px-5 py-7 sm:px-8 sm:py-9 lg:px-10">
+          <div className="studio-glow-primary pointer-events-none absolute -right-16 -top-20 -z-10 size-56 rounded-full blur-3xl" />
           <div className="flex flex-col gap-7 sm:flex-row sm:items-end sm:justify-between">
             <div className="max-w-2xl">
-              <div className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-primary">
+              <div className="studio-kicker mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em]">
                 <UsersIcon className="size-4" />
                 Your language circle
               </div>
@@ -41,7 +41,7 @@ const FriendsPage = () => {
                 Find a conversation partner and turn practice into a habit.
               </p>
             </div>
-            <div className="rounded-2xl border border-base-content/10 bg-base-100/70 px-5 py-3 backdrop-blur-sm">
+            <div className="rounded-lg border border-neutral-content/15 bg-neutral-content/10 px-5 py-3 backdrop-blur-sm">
               <p className="text-2xl font-bold leading-none">{friends.length}</p>
               <p className="mt-1 text-xs text-base-content/60">{friends.length === 1 ? "Friend" : "Friends"}</p>
             </div>
@@ -60,7 +60,7 @@ const FriendsPage = () => {
               </p>
             </div>
 
-            <label className="input input-bordered flex w-full items-center gap-2 sm:max-w-xs">
+            <label className="input input-bordered flex w-full items-center gap-2 bg-[#fffdf8] sm:max-w-xs">
               <SearchIcon className="size-4 text-base-content/50" />
               <input
                 type="search"
@@ -98,7 +98,7 @@ const FriendsPage = () => {
           )}
         </section>
 
-        <div className="flex flex-col gap-3 rounded-2xl border border-base-content/10 bg-base-200/60 p-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <div className="studio-panel flex flex-col gap-3 p-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <div>
             <h3 className="font-semibold">Looking for more practice partners?</h3>
             <p className="mt-1 text-sm text-base-content/60">Discover learners who share your language goals.</p>

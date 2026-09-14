@@ -17,8 +17,20 @@ const PORT = process.env.PORT || 3000;
 
 const __dirname = path.resolve();
 
+const allowedOrigins = new Set([
+  "https://lingofy-1.onrender.com",
+]);
+
 app.use(cors({
-  origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+  origin: (origin, callback) => {
+    const isLocalOrigin = origin && /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin);
+
+    if (!origin || isLocalOrigin || allowedOrigins.has(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Origin is not allowed by CORS"));
+  },
   credentials: true // allow frontend to send cookies
 }))
 app.use(express.json());

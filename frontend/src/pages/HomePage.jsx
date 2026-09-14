@@ -53,14 +53,14 @@ const HomePage = () => {
   });
 
   return (
-    <div className="min-h-full bg-base-100 px-4 py-5 sm:px-6 sm:py-8 lg:px-10 lg:py-10">
+    <div className="min-h-full px-4 py-5 sm:px-6 sm:py-8 lg:px-10 lg:py-10">
       <div className="mx-auto max-w-7xl space-y-8 sm:space-y-10">
-        <section className="relative isolate overflow-hidden rounded-[1.75rem] border border-primary/20 bg-gradient-to-br from-primary/15 via-base-200 to-secondary/10 px-5 py-7 shadow-sm sm:px-8 sm:py-9 lg:px-10">
-          <div className="pointer-events-none absolute -right-16 -top-20 -z-10 size-56 rounded-full bg-primary/10 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-24 left-1/3 -z-10 size-64 rounded-full bg-secondary/10 blur-3xl" />
+        <section className="studio-hero relative isolate overflow-hidden px-5 py-7 sm:px-8 sm:py-9 lg:px-10">
+          <div className="studio-glow-primary pointer-events-none absolute -right-16 -top-20 -z-10 size-56 rounded-full blur-3xl" />
+          <div className="studio-glow-accent pointer-events-none absolute -bottom-24 left-1/3 -z-10 size-64 rounded-full blur-3xl" />
           <div className="flex flex-col gap-7 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
-              <div className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em] text-primary">
+              <div className="studio-kicker mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.18em]">
                 <SparklesIcon className="size-4" />
                 Your language circle
               </div>
@@ -72,11 +72,11 @@ const HomePage = () => {
               </p>
             </div>
             <div className="grid grid-cols-2 gap-2 sm:flex sm:gap-3">
-              <div className="rounded-2xl border border-base-content/10 bg-base-100/70 px-4 py-3 backdrop-blur-sm">
+              <div className="rounded-lg border border-neutral-content/15 bg-neutral-content/10 px-4 py-3 backdrop-blur-sm">
                 <p className="text-2xl font-bold leading-none">{friends.length}</p>
                 <p className="mt-1 text-xs text-base-content/60">Friends</p>
               </div>
-              <div className="rounded-2xl border border-base-content/10 bg-base-100/70 px-4 py-3 backdrop-blur-sm">
+              <div className="rounded-lg border border-neutral-content/15 bg-neutral-content/10 px-4 py-3 backdrop-blur-sm">
                 <p className="text-2xl font-bold leading-none">{recommendedUsers.length}</p>
                 <p className="mt-1 text-xs text-base-content/60">New learners</p>
               </div>
@@ -149,7 +149,7 @@ const HomePage = () => {
                 return (
                   <div
                     key={user._id}
-                    className="group card border border-base-300/70 bg-base-200/70 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg"
+                    className="studio-panel group card transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg"
                   >
                     <div className="card-body gap-4 p-5 sm:p-6">
                       <div className="flex items-start gap-3">

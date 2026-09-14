@@ -16,14 +16,14 @@ const Sidebar = () => {
     ];
 
     return (
-        <aside className="sticky top-0 hidden h-screen w-72 shrink-0 flex-col border-r border-base-content/10 bg-base-200/70 lg:flex">
-            <div className="border-b border-base-content/10 px-6 py-6">
+        <aside className="lingofy-sidebar sticky top-0 hidden h-screen shrink-0 flex-col border-r lg:flex">
+            <div className="border-b border-neutral-content/10 px-6 py-6">
                 <Link to="/" className="group flex items-center gap-3" aria-label="Lingofy home">
-                    <span className="grid size-10 place-items-center rounded-2xl bg-primary/10 transition-colors group-hover:bg-primary/20">
-                        <ShipWheelIcon className="size-6 text-primary" />
+                        <span className="brand-mark-sidebar grid size-10 place-items-center rounded-lg transition-transform group-hover:-rotate-6">
+                        <ShipWheelIcon className="size-6" />
                     </span>
                     <span className="text-2xl font-bold tracking-tight">
-                        Lingofy<span className="text-primary">.</span>
+                        Lingofy<span className="brand-dot">.</span>
                     </span>
                 </Link>
                 <p className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-base-content/45">
@@ -39,22 +39,22 @@ const Sidebar = () => {
                         <Link
                             key={to}
                             to={to}
-                            className={`group flex h-12 w-full items-center gap-3 rounded-2xl px-4 text-sm font-semibold transition-all ${
+                            className={`group flex h-12 w-full items-center gap-3 rounded-lg px-4 text-sm font-semibold transition-all ${
                                 isActive
-                                    ? "bg-primary text-primary-content shadow-md shadow-primary/20"
-                                    : "text-base-content/65 hover:bg-base-content/5 hover:text-base-content"
+                                    ? "sidebar-link-active"
+                                    : "text-neutral-content/60 hover:bg-neutral-content/10 hover:text-neutral-content"
                             }`}
                         >
-                            <Icon className={`size-5 ${isActive ? "" : "text-base-content/55 group-hover:text-primary"}`} />
+                            <Icon className={`size-5 ${isActive ? "" : "text-base-content/45 group-hover:text-accent"}`} />
                             <span>{label}</span>
-                            {isActive && <span className="ml-auto size-1.5 rounded-full bg-primary-content" />}
+                            {isActive && <span className="sidebar-link-dot ml-auto size-1.5 rounded-full" />}
                         </Link>
                     );
                 })}
             </nav>
 
-            <div className="border-t border-base-content/10 p-4">
-                <div className="flex items-center gap-3 rounded-2xl bg-base-100/70 p-3 shadow-sm">
+            <div className="border-t border-neutral-content/10 p-4">
+                <div className="flex items-center gap-3 rounded-lg bg-white/10 p-3">
                     <div className="avatar shrink-0">
                         <div className="size-10 rounded-xl ring-2 ring-primary/15 ring-offset-1 ring-offset-base-100">
                             <img
@@ -64,9 +64,9 @@ const Sidebar = () => {
                         </div>
                     </div>
                     <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-semibold">{authUser?.fullname}</p>
-                        <p className="mt-0.5 flex items-center gap-1.5 text-xs text-success">
-                            <span className="size-1.5 rounded-full bg-success" />
+                        <p className="truncate text-sm font-semibold text-neutral-content">{authUser?.fullname}</p>
+                        <p className="sidebar-status mt-0.5 flex items-center gap-1.5 text-xs">
+                            <span className="sidebar-status-dot size-1.5 rounded-full" />
                             Online
                         </p>
                     </div>

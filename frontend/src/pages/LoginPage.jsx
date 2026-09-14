@@ -18,21 +18,21 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="h-screen flex items-center justify-center p-4 sm:p-6 md:p-8" data-theme="forest">
-      <div className="border border-primary/25 flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-base-100 rounded-xl shadow-lg overflow-hidden">
+    <div className="auth-shell flex min-h-screen items-center justify-center p-4 sm:p-6 md:p-8">
+      <div className="auth-card flex w-full max-w-5xl flex-col overflow-hidden md:flex-row">
         {/* LOGIN FORM SECTION*/}
-        <div className="w-full lg:w-1/2 p-4 sm:p-8 flex flex-col">
+        <div className="flex w-full flex-col p-6 sm:p-10 md:w-7/12 lg:p-12">
           {/* LOGO */}
-          <div className="mb-4 flex items-center justify-start gap-2">
-            <ShipWheelIcon className="size-9 text-primary" />
-            <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider">
+          <div className="mb-8 flex items-center justify-start gap-2">
+            <span className="brand-mark grid size-10 place-items-center rounded-lg"><ShipWheelIcon className="size-6" /></span>
+            <span className="text-3xl font-extrabold tracking-tight">
               Lingofy
             </span>
           </div>
           {/* ERROR MESSAGE DISPLAY SECTION*/}
           {error && (
             <div className="alert alert-error mb-4">
-              <span>{error.response.data.message}</span>
+              <span>{error.response?.data?.message || "Unable to sign in. Check your connection and try again."}</span>
             </div>
           )}
 
@@ -41,7 +41,7 @@ const LoginPage = () => {
               <div className="space-y-4">
                 <div>
                   <h2 className="text-xl font-semibold">Welcome Back</h2>
-                  <p className="text-sm opacity-70">
+                  <p className="auth-copy text-sm">
                     Sign in to your account to continue your language journey
                   </p>
                 </div>
@@ -54,7 +54,7 @@ const LoginPage = () => {
                     <input
                       type="email"
                       placeholder="hello@example.com"
-                      className="input input-bordered w-full"
+                      className="auth-input input input-bordered w-full"
                       value={loginData.email}
                       onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
                       required
@@ -68,7 +68,7 @@ const LoginPage = () => {
                     <input
                       type="password"
                       placeholder="••••••••"
-                      className="input input-bordered w-full"
+                      className="auth-input input input-bordered w-full"
                       value={loginData.password}
                       onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
                       required
@@ -89,7 +89,7 @@ const LoginPage = () => {
                   <div className="text-center mt-4">
                     <p className="text-sm">
                       Don't have an account?{" "}
-                      <Link to="/signup" className="text-primary hover:underline">
+                        <Link to="/signup" className="link link-primary font-semibold">
                         Create one
                       </Link>
                     </p>
@@ -103,7 +103,7 @@ const LoginPage = () => {
 
         
         {/* IMAGE SECTION */}
-        <div className="hidden lg:flex w-full lg:w-1/2 bg-primary/10 items-center justify-center">
+        <div className="auth-art hidden w-full items-center justify-center md:flex md:w-5/12">
           <div className="max-w-md p-8">
             {/* Illustration */}
             <div className="relative aspect-square max-w-sm mx-auto">
@@ -111,7 +111,7 @@ const LoginPage = () => {
             </div>
 
             <div className="text-center space-y-3 mt-6">
-              <h2 className="text-xl font-semibold">Connect with language partners worldwide</h2>
+              <h2 className="text-xl font-semibold">Your next conversation starts here.</h2>
               <p className="opacity-70">
                 Practice conversations, make friends, and improve your language skills together
               </p>

@@ -30,15 +30,15 @@ const SignUpPage = () => {
 
 
   return (
-    <div className="h-screen flex items-center justify-center p-4 sm:p-6 md:p-8" data-theme="forest">
-      <div className="border border-primary/25 flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-base-100 rounded-xl shadow-lg overflow-hidden">
+    <div className="auth-shell flex min-h-screen items-center justify-center p-4 sm:p-6 md:p-8">
+      <div className="auth-card flex w-full max-w-5xl flex-col overflow-hidden md:flex-row">
 
     {/* SignUp Form - LEFT SIDE */}
-      <div className="w-full lg:w-1/2 p-4 sm:p-8 flex flex-col">
+      <div className="flex w-full flex-col p-6 sm:p-10 md:w-7/12 lg:p-12">
         {/* LOGO */}
-        <div className="mb-4 flex items-center justify-start gap-2">
-          <ShipWheelIcon className="size-9 text-primary" />
-          <span className="text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider">
+        <div className="mb-8 flex items-center justify-start gap-2">
+          <span className="brand-mark grid size-10 place-items-center rounded-lg"><ShipWheelIcon className="size-6" /></span>
+          <span className="text-3xl font-extrabold tracking-tight">
             Lingofy
           </span>
         </div>
@@ -69,7 +69,7 @@ const SignUpPage = () => {
 
                     <input type="text"
                     placeholder="John Doe"
-                    className="input input-bordered w-full"
+                    className="auth-input input input-bordered w-full"
                     value={signupData.fullname}
                     onChange={(e) => setSignupData({ ...signupData, fullname: e.target.value })}
                     required
@@ -83,7 +83,7 @@ const SignUpPage = () => {
 
                     <input type="email"
                     placeholder="JohnDoe@gmail.com"
-                    className="input input-bordered w-full"
+                    className="auth-input input input-bordered w-full"
                     value={signupData.email}
                     onChange={(e) => setSignupData({ ...signupData, email: e.target.value })}
                     required
@@ -97,7 +97,7 @@ const SignUpPage = () => {
 
                     <input type="password"
                     placeholder="********"
-                    className="input input-bordered w-full"
+                    className="auth-input input input-bordered w-full"
                     value={signupData.password}
                     onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
                     required
@@ -110,13 +110,13 @@ const SignUpPage = () => {
                   <label className="label cursor-pointer justify-start gap-2">
                     <input 
                     type="checkbox"
-                    className="checkbox checkbox-sm"
+                    className="checkbox checkbox-primary checkbox-sm"
                     required 
                     />
                     <span className="text-xs leading-tight">
                       I agree to the{" "}
-                      <span className="text-primary hover:underline">terms of service</span> and{" "}
-                      <span className="text-primary hover:underline">privacy policy</span>
+                      <span className="link link-primary">terms of service</span> and{" "}
+                      <span className="link link-primary">privacy policy</span>
                     </span>
                   </label>
                 </div>
@@ -136,7 +136,7 @@ const SignUpPage = () => {
               <div className="text-center mt-4">
                 <p className="text-sm">
                   Already have an account?{" "}
-                  <Link to="/login" className="text-primary hover:underline">
+                  <Link to="/login" className="link link-primary font-semibold">
                   Sign in
                   </Link>
                 </p>
@@ -147,7 +147,7 @@ const SignUpPage = () => {
       </div>
 
       {/* SignUp Form - LEFT SIDE */}
-      <div className="hidden lg:flex w-full lg:w-1/2 bg-primary/10 items-center justify-center">
+      <div className="auth-art hidden w-full items-center justify-center md:flex md:w-5/12">
         <div className="max-w-md p-8">
           {/* ILLUSTRATION */}
           <div className="relative aspect-square max-w-sm mx-auto">
@@ -155,7 +155,7 @@ const SignUpPage = () => {
           </div>
 
           <div className="text-center space-y-3 mt-6">
-            <h2 className="text-xl font-semibold">Connect with language partners worldwide</h2>
+            <h2 className="text-xl font-semibold">Build a language circle that sticks.</h2>
             <p className="opacity-70">Practice conversations, make friends, and improve your language skills together</p>
           </div>
         </div>

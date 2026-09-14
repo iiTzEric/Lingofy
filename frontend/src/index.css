@@ -1,12 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  font-family: 'Manrope', sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  background: hsl(var(--b1));
+  color: hsl(var(--bc));
+}
+
+button,
+a,
+input {
+  font-family: inherit;
+}
+
+.font-mono,
+.tracking-\[0\.18em\] {
+  font-family: 'DM Mono', monospace;
+}
+
+.lingofy-shell {
+  min-height: 100vh;
+  background: hsl(var(--b1));
+  color: hsl(var(--bc));
+}
+
+.lingofy-sidebar {
+  width: 17rem;
+  border-color: hsl(var(--nc) / 0.16);
+  background: hsl(var(--n));
+  color: hsl(var(--nc));
+}
+
+.lingofy-header {
+  position: sticky;
+  isolation: isolate;
+  flex: none;
+  z-index: 100;
+  overflow: hidden;
+  border-color: hsl(var(--bc) / 0.14);
+  background-color: hsl(var(--b1)) !important;
+  color: hsl(var(--bc));
+  box-shadow: none;
+}
+
+.studio-panel {
+  border: 1px solid hsl(var(--bc) / 0.14);
+  border-radius: 1rem;
+  background: hsl(var(--b1) / 0.8);
+  box-shadow: 0 16px 40px hsl(var(--bc) / 0.08);
+}
+
+.studio-hero {
+  border: 0;
+  border-radius: 1rem;
+  background: hsl(var(--n));
+  color: hsl(var(--nc));
+  box-shadow: 0 18px 40px hsl(var(--bc) / 0.16);
+}
+
+.studio-hero p {
+  color: hsl(var(--nc) / 0.68);
+}
+
+.studio-kicker {
+  color: hsl(var(--a));
+}
+
+.studio-accent {
+  color: hsl(var(--p));
+}
+
+.studio-glow-primary {
+  background: hsl(var(--p) / 0.24);
+}
+
+.studio-glow-accent {
+  background: hsl(var(--a) / 0.18);
+}
+
+.brand-mark {
+  background: hsl(var(--n));
+  color: hsl(var(--nc));
+}
+
+.brand-mark-sidebar {
+  background: hsl(var(--a));
+  color: hsl(var(--ac));
+}
+
+.brand-dot,
+.sidebar-link-active {
+  color: hsl(var(--a));
+}
+
+.sidebar-link-active {
+  background: hsl(var(--a));
+  color: hsl(var(--ac));
+}
+
+.sidebar-link-active .sidebar-link-dot {
+  background: hsl(var(--ac));
+}
+
+.sidebar-status {
+  color: hsl(var(--su));
+}
+
+.sidebar-status-dot {
+  background: hsl(var(--su));
+}
+
+.auth-shell {
+  color: hsl(var(--bc));
+  background: hsl(var(--b1));
+}
+
+.auth-card {
+  color: hsl(var(--bc));
+  border: 1px solid hsl(var(--bc) / 0.14);
+  border-radius: 1rem;
+  background: hsl(var(--b1));
+  box-shadow: 0 24px 70px hsl(var(--bc) / 0.12);
+}
+
+.auth-art {
+  background: hsl(var(--n));
+  color: hsl(var(--nc));
+}
+
+.auth-input {
+  border-color: hsl(var(--bc) / 0.2);
+  background: hsl(var(--b2));
+  color: hsl(var(--bc));
+}
+
+.auth-input::placeholder {
+  color: hsl(var(--bc) / 0.42);
+}
+
+.auth-card .label-text {
+  color: hsl(var(--bc) / 0.72);
+}
+
+.auth-copy {
+  color: hsl(var(--bc) / 0.62);
+}
+
+.auth-input:focus {
+  border-color: hsl(var(--p));
+  outline: 2px solid hsl(var(--p) / 0.18);
+  outline-offset: 1px;
+}
 
 .str-chat__channel {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(to bottom, #c9e8c9, #b7e7bb);
+  background: hsl(var(--b1));
   height: 100%;
 }
 
@@ -15,13 +175,13 @@
   width: 100%;
   height: 80% !important;
   margin: 0 auto !important;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: 1rem;
+  box-shadow: 0 16px 40px hsl(var(--bc) / 0.1);
   overflow: hidden;
 }
 
 .str-chat__list {
-  background-color: #ffffff;
+  background-color: hsl(var(--b1));
   padding: 12px;
 }
 
@@ -30,5 +190,5 @@
 }
 
 .str-chat__message-input {
-  border-top: 1px solid #ddd;
+  border-top: 1px solid hsl(var(--bc) / 0.14);
 }
