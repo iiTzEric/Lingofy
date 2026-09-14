@@ -1,10 +1,8 @@
 import axios from "axios";
 
-const apiHost = typeof window === "undefined" ? "localhost" : window.location.hostname;
-const apiBaseUrl = import.meta.env.VITE_API_URL ||
-    (typeof window === "undefined" ? "/api" : `${window.location.protocol}//${apiHost}:3000/api`);
+const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:3000/api" : "/api"
 
 export const axiosInstance = axios.create({
-    baseURL: apiBaseUrl,
+    baseURL: BASE_URL,
     withCredentials: true // send cookies with request
 })
