@@ -32,7 +32,8 @@ const ChatPage = () => {
   const { data:tokenData } = useQuery({
     queryKey: ["streamToken"],
     queryFn: getStreamToken,
-    enabled: !!authUser // this will run only when auth user is available
+    enabled: !!authUser, // this will run only when auth user is available
+    staleTime: 5 * 60 * 1000,
   })
 
   useEffect(() => {
