@@ -26,7 +26,7 @@ Lingofy is a social language-learning app for finding conversation partners and 
 
 | Real-time chat | Video calls |
 | --- | --- |
-| ![Lingofy real-time chat between two friends](frontend/public/Screenshot (253).png) | ![Lingofy video call between two learners](frontend/public/Screenshot (254).png) |
+| ![Lingofy real-time chat between two friends](frontend/public/chat.png) | ![Lingofy video call between two learners](frontend/public/video.png) |
 
 ## Highlights
 
