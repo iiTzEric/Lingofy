@@ -4,6 +4,7 @@ import "stream-chat-react/dist/css/index.css";
 import './index.css'
 import App from './App.jsx'
 import { BrowserRouter } from "react-router"
+import { GoogleOAuthProvider } from '@react-oauth/google'
 
 import {
   QueryClient,
@@ -20,9 +21,11 @@ const queryClient = new QueryClient()
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-    <QueryClientProvider client={queryClient}>
-        <App />
-    </QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+          <App />
+        </GoogleOAuthProvider>
+      </QueryClientProvider>
     </BrowserRouter>
   </StrictMode>,
 )

@@ -1,6 +1,7 @@
 import { upsertStreamUser } from "../lib/stream.js";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
+import { OAuth2Client } from "google-auth-library";
 
 const cookieOptions = {
   maxAge: 7 * 24 * 60 * 60 * 1000,
@@ -92,6 +93,11 @@ export async function login(req, res) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
+    // NEW: Google-only accounts have no password, so tell the user how to sign in
+    if (!user.password) {
+      return res.status(400).json({ message: "This account uses Google sign-in. Please continue with Google." });
+    }
+
     const isPasswordCorrect = await user.matchPassword(password);
     if (!isPasswordCorrect) {
       return res.status(401).json({ message: "Invalid email or password" });
@@ -106,6 +112,81 @@ export async function login(req, res) {
   } catch (error) {
     console.log("Error during login:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+// NEW: Google sign-in / sign-up
+export async function googleAuth(req, res) {
+  try {
+    const { credential } = req.body;
+
+    if (!credential) {
+      return res.status(400).json({ message: "Missing Google credential" });
+    }
+
+    if (!process.env.JWT_SECRET_KEY || !process.env.GOOGLE_CLIENT_ID) {
+      return res.status(500).json({ message: "Server authentication is not configured" });
+    }
+
+    // Created inside the function so it always sees the loaded env variables
+    const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+    // Verifies signature, expiry, and that the token was issued for OUR Client ID
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const { sub, email, email_verified, name, picture } = ticket.getPayload();
+
+    if (!email || !email_verified) {
+      return res.status(401).json({ message: "Google email is not verified" });
+    }
+
+    const normalizedEmail = email.trim().toLowerCase();
+
+    let user = await User.findOne({ $or: [{ googleId: sub }, { email: normalizedEmail }] });
+
+    if (!user) {
+      // Brand new user
+      user = await User.create({
+        email: normalizedEmail,
+        fullname: name || normalizedEmail.split("@")[0],
+        profilePicture: picture || `https://api.dicebear.com/9.x/avataaars/svg?seed=${sub}`,
+        googleId: sub,
+      });
+
+      try {
+        await upsertStreamUser({
+          id: user._id.toString(),
+          name: user.fullname,
+          image: user.profilePicture || "",
+        });
+        console.log(`Stream user created for ${user.fullname} (Google)`);
+      } catch (error) {
+        console.log("Error creating Stream user:", error);
+      }
+    } else if (!user.googleId) {
+      // Existing email/password account: link Google to it.
+      // Clearing the password means only Google can access it from now on, which
+      // prevents someone who pre-registered this email (unverified) from keeping access.
+      user.googleId = sub;
+      user.password = undefined;
+      await user.save();
+    }
+
+    // Same token settings as login
+    const token = jwt.sign({ userId: user._id.toString() }, process.env.JWT_SECRET_KEY, {
+      expiresIn: "1h",
+    });
+
+    res.cookie("jwt", token, cookieOptions);
+
+    const { password, ...safeUser } = user.toObject();
+    res.status(200).json({ success: true, user: safeUser });
+  } catch (error) {
+    console.log("Error during Google auth:", error.message);
+    res.status(401).json({ message: "Invalid Google token" });
   }
 }
 

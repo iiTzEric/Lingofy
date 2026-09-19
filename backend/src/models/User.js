@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
     fullname: {
         type: String,
         required: true,
-        unique: true,
+        // unique removed: names aren't unique identifiers, email is
     },
     email: {
         type: String,
@@ -16,7 +16,15 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true,
+        // Only required for email/password accounts, not Google sign-ins
+        required: function () {
+            return !this.googleId;
+        },
+    },
+    googleId: {
+        type: String,
+        unique: true,
+        sparse: true, // lets many users have no googleId without index conflicts
     },
     bio: {
         type: String,
@@ -46,7 +54,8 @@ const userSchema = new mongoose.Schema({
 
 // Pre-save hook to hash the password before saving the user document
 userSchema.pre('save', async function () {
-    if (!this.isModified('password')) {
+    // Skips Google users too, since they have no password to hash
+    if (!this.password || !this.isModified('password')) {
         return;
     }
     const salt = await bcrypt.genSalt(10);
@@ -54,6 +63,8 @@ userSchema.pre('save', async function () {
 });
 
 userSchema.methods.matchPassword = async function (enteredPassword) {
+    // Google-only accounts have no password, so password login always fails
+    if (!this.password) return false;
     const isPasswordCorrect = await bcrypt.compare(enteredPassword, this.password);
     return isPasswordCorrect;
 };

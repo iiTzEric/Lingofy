@@ -3,6 +3,7 @@ import { ShipWheelIcon } from "lucide-react"
 
 import { Link } from "react-router"
 import useSignUp from "../hooks/useSignUp.js";
+import GoogleAuthButton from "../components/GoogleAuthButton";
 
  
 const SignUpPage = () => {
@@ -47,7 +48,7 @@ const SignUpPage = () => {
 
         {error && (
           <div className="alert alert-error mb-4">
-            <span>{error.response.data.message}</span>
+            <span>{error.response?.data?.message || "Unable to create account. Check your connection and try again."}</span>
           </div>
         )}
 
@@ -132,6 +133,10 @@ const SignUpPage = () => {
                   "Create Account"
                 )}
               </button>
+
+              {/* NEW: divider + Google sign-up */}
+              <div className="divider my-1 text-xs">OR</div>
+              <GoogleAuthButton />
 
               <div className="text-center mt-4">
                 <p className="text-sm">

@@ -2,6 +2,7 @@ import { useState } from "react"
 import { ShipWheelIcon } from "lucide-react";
 import { Link } from "react-router";
 import useLogin from "../hooks/useLogin";
+import GoogleAuthButton from "../components/GoogleAuthButton";
 
 
 const LoginPage = () => {
@@ -85,6 +86,10 @@ const LoginPage = () => {
                       "Sign In"
                     )}
                   </button>
+
+                  {/* NEW: divider + Google sign-in */}
+                  <div className="divider my-1 text-xs">OR</div>
+                  <GoogleAuthButton />
 
                   <div className="text-center mt-4">
                     <p className="text-sm">
