@@ -3,11 +3,26 @@ import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import { OAuth2Client } from "google-auth-library";
 
+// One lifetime for both the JWT and the cookie so they always match
+const TOKEN_LIFETIME = "7d";
+const TOKEN_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+
 const cookieOptions = {
-  maxAge: 7 * 24 * 60 * 60 * 1000,
-  httpOnly: true,
-  sameSite: "strict",
+  maxAge: TOKEN_MAX_AGE_MS,
+  httpOnly: true, // prevent XSS attacks
+  sameSite: "strict", // prevent CSRF attacks
   secure: process.env.NODE_ENV === "production",
+};
+
+const signToken = (userId) =>
+  jwt.sign({ userId: userId.toString() }, process.env.JWT_SECRET_KEY, {
+    expiresIn: TOKEN_LIFETIME,
+  });
+
+// Never send the password hash to the browser
+const toSafeUser = (user) => {
+  const { password: _password, ...safeUser } = user.toObject();
+  return safeUser;
 };
 
 export async function signup(req, res) {
@@ -55,18 +70,10 @@ export async function signup(req, res) {
       console.log("Error creating Stream user:", error);
     }
 
-    const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET_KEY, {
-      expiresIn: "7d",
-    });
+    res.cookie("jwt", signToken(newUser._id), cookieOptions);
 
-    res.cookie("jwt", token, {
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      httpOnly: true, // prevent XSS attacks,
-      sameSite: "strict", // prevent CSRF attacks
-      secure: process.env.NODE_ENV === "production",
-    });
-
-    res.status(201).json({ success: true, user: newUser });
+    // FIXED: password hash is no longer returned
+    res.status(201).json({ success: true, user: toSafeUser(newUser) });
   } catch (error) {
     console.log("Error in signup controller", error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -93,7 +100,7 @@ export async function login(req, res) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // NEW: Google-only accounts have no password, so tell the user how to sign in
+    // Google-only accounts have no password, so tell the user how to sign in
     if (!user.password) {
       return res.status(400).json({ message: "This account uses Google sign-in. Please continue with Google." });
     }
@@ -103,11 +110,8 @@ export async function login(req, res) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    const token = jwt.sign({ userId: user._id.toString() }, process.env.JWT_SECRET_KEY, {
-      expiresIn: "1h",
-    });
-
-    res.cookie("jwt", token, cookieOptions);
+    // FIXED: token now lasts as long as the cookie (7 days)
+    res.cookie("jwt", signToken(user._id), cookieOptions);
     res.status(200).json({ message: "Login successful" });
   } catch (error) {
     console.log("Error during login:", error);
@@ -115,7 +119,7 @@ export async function login(req, res) {
   }
 }
 
-// NEW: Google sign-in / sign-up
+// Google sign-in / sign-up
 export async function googleAuth(req, res) {
   try {
     const { credential } = req.body;
@@ -175,15 +179,8 @@ export async function googleAuth(req, res) {
       await user.save();
     }
 
-    // Same token settings as login
-    const token = jwt.sign({ userId: user._id.toString() }, process.env.JWT_SECRET_KEY, {
-      expiresIn: "1h",
-    });
-
-    res.cookie("jwt", token, cookieOptions);
-
-    const { password, ...safeUser } = user.toObject();
-    res.status(200).json({ success: true, user: safeUser });
+    res.cookie("jwt", signToken(user._id), cookieOptions);
+    res.status(200).json({ success: true, user: toSafeUser(user) });
   } catch (error) {
     console.log("Error during Google auth:", error.message);
     res.status(401).json({ message: "Invalid Google token" });
@@ -196,46 +193,73 @@ export function logout(req, res) {
 }
 
 export async function onboard(req, res) {
- try {
+  try {
     const userId = req.user._id;
 
-    const { fullname, bio, nativeLanguage, learningLanguage, location } = req.body;
+    // Text fields must be real strings (rejects objects/arrays sent by mistake or on purpose)
+    const str = (value) => (typeof value === "string" ? value.trim() : "");
 
-    if (!fullname || !bio || !nativeLanguage || !learningLanguage || !location) {
-      return res.status(400).json({ message: "All fields are required", missingFields: [
-        !fullname && "fullname",
-        !bio && "bio",
-        !nativeLanguage && "nativeLanguage",
-        !learningLanguage && "learningLanguage",
-        !location && "location"
-      ].filter(Boolean)
-      });
+    const fullname = str(req.body.fullname);
+    const bio = str(req.body.bio);
+    const nativeLanguage = str(req.body.nativeLanguage);
+    const location = str(req.body.location);
+
+    // Accept an array or a single string, keep only non-empty strings
+    const rawLanguages = Array.isArray(req.body.learningLanguage)
+      ? req.body.learningLanguage
+      : [req.body.learningLanguage];
+    const learningLanguage = rawLanguages.filter((l) => typeof l === "string" && l.trim()).map((l) => l.trim());
+
+    const missingFields = [
+      !fullname && "fullname",
+      !bio && "bio",
+      !nativeLanguage && "nativeLanguage",
+      learningLanguage.length === 0 && "learningLanguage",
+      !location && "location",
+    ].filter(Boolean);
+
+    if (missingFields.length > 0) {
+      return res.status(400).json({ message: "All fields are required", missingFields });
     }
 
-    const profilePicture = req.body.profilePicture?.trim() ||
-      `https://api.dicebear.com/9.x/avataaars/svg?seed=${userId}`;
+    // Only accept http(s) URLs; otherwise keep the current picture (e.g. from Google) or use an avatar
+    const submittedPicture = str(req.body.profilePicture);
+    const profilePicture = /^https?:\/\//i.test(submittedPicture)
+      ? submittedPicture
+      : req.user.profilePicture || `https://api.dicebear.com/9.x/avataaars/svg?seed=${userId}`;
 
-    const updatedUser = await User.findByIdAndUpdate(userId, {
-      ...req.body,
-      profilePicture,
-      isOnboarded: true
-    }, { new: true });
+    // FIXED: whitelist the fields a user may change instead of spreading req.body
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        fullname,
+        bio,
+        nativeLanguage,
+        learningLanguage,
+        location,
+        profilePicture,
+        isOnboarded: true,
+      },
+      { new: true, runValidators: true }
+    );
 
-    if(!updatedUser) {
+    if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }
+
     try {
-    await upsertStreamUser({
-      id: updatedUser._id.toString(),
-      name: updatedUser.fullname,
-      image: updatedUser.profilePicture || "",
-    });
-    console.log(`Stream user updated after onboarding for ${updatedUser.fullname}`);
-  } catch (error) {
-    console.log("Error updating Stream user after onboarding:", error);
-  }
-  
-    res.status(200).json({ message: "Onboarding completed successfully", user: updatedUser });
+      await upsertStreamUser({
+        id: updatedUser._id.toString(),
+        name: updatedUser.fullname,
+        image: updatedUser.profilePicture || "",
+      });
+      console.log(`Stream user updated after onboarding for ${updatedUser.fullname}`);
+    } catch (error) {
+      console.log("Error updating Stream user after onboarding:", error);
+    }
+
+    // FIXED: password hash is no longer returned
+    res.status(200).json({ message: "Onboarding completed successfully", user: toSafeUser(updatedUser) });
   } catch (error) {
     console.error("Error during onboarding:", error);
     res.status(500).json({ message: "Internal server error" });

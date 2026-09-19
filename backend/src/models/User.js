@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: '',
     },
+    location: {
+    type: String,
+    default: '',
+    },
     profilePicture: {
         type: String,
         default: '',
@@ -68,6 +72,14 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
     const isPasswordCorrect = await bcrypt.compare(enteredPassword, this.password);
     return isPasswordCorrect;
 };
+
+userSchema.set("toJSON", {
+    transform: (doc, ret) => {
+        delete ret.password;
+        delete ret.googleId;
+        return ret;
+    },
+});
 
 const User = mongoose.model('User', userSchema);
 

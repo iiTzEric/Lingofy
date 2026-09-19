@@ -23,6 +23,9 @@ const friendRequestSchema = new mongoose.Schema(
   }
 );
 
+// NEW: one request per sender/recipient pair, enforced by the database
+friendRequestSchema.index({ sender: 1, recipient: 1 }, { unique: true });
+
 const FriendRequest = mongoose.model("FriendRequest", friendRequestSchema);
 
 export default FriendRequest;
